@@ -1,0 +1,47 @@
+$Id: CHANGES,v 1.11 2004/10/31 11:22:58 mavetju Exp $
+
+version 1.8
+	- Use pcap instead of tcpdump output
+
+version 1.7
+	- Support for tcpdump 3.8.x
+
+version 1.6
+	- Option 82, submitted by Phil Pennock <pdp@nl.demon.net>
+	- Add fflush(), submitted by Gary Colman <gary@colmans.net>
+	- Fix problem with padding, they were not handled properly
+	  and caused old memory to be reused.
+
+version 1.5
+	- better input checking regarding validity of the header
+	  of the UDP packet (bug anton.holleman@nominum.com)
+	- Added some DHCP options I found on the INIA website.
+	  I can't parse all of them yet since I'm not sure how they
+	  look like.
+
+version 1.4
+	- added auto-configure script
+	- fixed problem with strsep() under Solaris
+	- added FILES, CONTACT
+
+version 1.3
+	- added chaddr filter, contributed by Peter Apian-Bennewitz
+	  <apian@ise.fhg.de>
+	- client-identifier is now printed as long as it is.
+	  (bug anton.holleman@nominum.com)
+
+version 1.2
+	- forgot to update the man-page.
+
+version 1.1
+	- Sometimes, specially with bootp-packets, the option-packet
+	  would contain rubbish data which dhcpdump tried to parse.
+	  And that caused an overflow in the arrays, which caused
+	  a segfault.
+	- Added more tables so the numerical values of fields (like
+	  network type, requested parameter list) are not only
+	  numeric anymore.
+	- Better layout of hex-strings.
+
+version 1.0
+	- Initial release

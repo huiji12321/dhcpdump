@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+SHELL=/bin/bash
+BIN_PATH = /usr/bin
+
+# The name and version of the source
+source = $(shell grep "^Source: " debian/control|head -1|sed 's/Source: \(.*\)/\1/g')
+package = $(shell grep "^Package: " debian/control|head -1|sed 's/Package: \(.*\)/\1/g')
+version = $(shell grep "^$(source) " debian/changelog|head -1 |sed 's/.*(\(.*\)\-[^\-]*).*/\1/g')
+revision = $(shell grep "^$(source) " debian/changelog|head -1 |sed 's/.*([^\-]*\-\(.*\)).*/\1/g')
+
+installbin = install -g root -o root -m 755
+installdoc = install -g root -o root -m 644
+
+# support non-Linux arches, see #622267
+EXTRAFLAG = $(shell dpkg-architecture -ilinux-any || echo "-D_BSD_SOURCE")
+
+ifeq ($(origin CC),default)
+CC = $(DEB_HOST_GNU_TYPE)-gcc
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+CFLAGS = -g -O2 -Wall
+else
+CFLAGS = -O2 -Wall
+endif
+STRIP = $(DEB_HOST_GNU_TYPE)-strip
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+STRIP = strip
+endif
+
+%:
+	dh $@  
+
+build:
+	$(MAKE) CC=$(CC) CFLAGS="$(CFLAGS) $(EXTRAFLAG) -DHAVE_STRSEP"
+
+clean:debclean
+	$(MAKE) clean
+
+#Cleans debian binary directories to allow binary creation
+debclean:
+	rm -rf debian/dhcpdump
+	rm -rf debian/dhcpdump.substvars
+	rm -f debian/{files,substvars}
+
+override_dh_auto_install:
+	#
+	$(installbin) -d debian/$(package)/usr/bin
+	$(STRIP) dhcpdump
+	$(installbin) dhcpdump debian/$(package)/usr/bin
+	#
+	$(installbin) -d debian/$(package)/usr/share/man/man8
+	$(installdoc) dhcpdump.8 debian/$(package)/usr/share/man/man8
+	gzip -9n debian/$(package)/usr/share/man/man?/*
+	#
