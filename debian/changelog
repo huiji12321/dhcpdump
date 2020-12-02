@@ -1,10 +1,10 @@
 dhcpdump (1.8-3) unstable; urgency=low
 
   * New-maintainer upload. (Closes: #934419)
-  * Fix the manpage,dhcpdump does not parse the output of tcpdump 
-    but analyze and display it. (Closes:647228)
+  * Fix the manpage,dhcpdump does not parse the output of tcpdump
+    but analyze and display it. (Closes: #647228)
 
- -- Peter Ji <peter_jay@yeah.net>  Tue, 03 Nov 2020 10:05:09 +0800
+ -- Peter Ji <peter_jay@yeah.net>  Mon, 30 Nov 2020 11:47:40 +0800
 
 dhcpdump (1.8-2.2) unstable; urgency=medium
 

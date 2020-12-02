@@ -4,7 +4,7 @@ Description: <fix manpage and rebuild with new package format>
  .
    * New-maintainer upload. (Closes: #934419)
    * Fix the manpage,dhcpdump does not parse the output of tcpdump
-     but analyze and display it. (Closes:647228)
+     but analyze and display it. (Closes: #647228)
 Author: Peter Ji <peter_jay@yeah.net>
 Bug-Debian: https://bugs.debian.org/647228
 Bug-Debian: https://bugs.debian.org/934419
@@ -20,7 +20,7 @@ Bug-Debian: https://bugs.debian.org/<bugnumber>
 Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
 Forwarded: <no|not-needed|url proving that it has been forwarded>
 Reviewed-By: <name and email of someone who approved the patch>
-Last-Update: 2020-11-05
+Last-Update: 2020-12-01
 
 --- dhcpdump-1.8.orig/CHANGES
 +++ dhcpdump-1.8/CHANGES
@@ -38,7 +38,7 @@ Last-Update: 2020-11-05
 @@ -1,11 +1,18 @@
  CFLAGS=	 -Wall -g
 -LDFLAGS= -g
-+LDFLAGS= -g  -fpie -pie -Wl,-z,relro
++LDFLAGS= -g -pie -fpie -Wl,-z,relro -Wl,-z,now
  LIBS=	-lpcap
 +installbin = install -g root -o root -m 755
 +installdoc = install -g root -o root -m 644
@@ -71,7 +71,7 @@ Last-Update: 2020-11-05
 +	cat debian/copyright LICENSE > copyright.txt
 +
 +install: all
-+	strip dhcpdump
++	#strip dhcpdump
 +	$(installbin) dhcpdump $(BIN_PATH)
 +	$(installdoc) dhcpdump.8 $(MAN_PATH)
 +	gzip -9n $(MAN_PATH)dhcpdump.8
@@ -88,38 +88,7 @@ Last-Update: 2020-11-05
  /* 113 */	"Netinfo Tag",
 --- dhcpdump-1.8.orig/dhcpdump.c
 +++ dhcpdump-1.8/dhcpdump.c
-@@ -16,11 +16,13 @@
- #include <netinet/in.h>
- #include <netinet/ip.h>
- #include <netinet/udp.h>
-+#include <netinet/ether.h>
- #include <arpa/inet.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <ctype.h>
-+#include <time.h>
- #include <pcap.h>
- #include <err.h>
- #include <regex.h>
-@@ -38,11 +40,11 @@
- #define LARGESTRING 1024
- 
- // header variables
--u_char	timestamp[40];			// timestamp on header
--u_char	mac_origin[40];			// mac address of origin
--u_char	mac_destination[40];		// mac address of destination
--u_char	ip_origin[40];			// ip address of origin
--u_char	ip_destination[40];		// ip address of destination
-+char	timestamp[40];			// timestamp on header
-+char	mac_origin[40];			// mac address of origin
-+char	mac_destination[40];		// mac address of destination
-+char	ip_origin[40];			// ip address of origin
-+char	ip_destination[40];		// ip address of destination
- int	max_data_len;			// maximum size of a packet
- 
- int	tcpdump_style = -1;
-@@ -91,7 +93,7 @@ int main(int argc, char **argv) {
+@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
  			interface = argv[++i];
  			break;
  		default:
@@ -128,76 +97,6 @@ Last-Update: 2020-11-05
  			    argv[0], argv[i][1]);
  			usage();
  		}
-@@ -160,13 +162,21 @@ void pcap_callback(u_char *user, const s
- 	strcpy(mac_destination,
- 	    ether_ntoa((struct ether_addr *)eh->ether_dhost));
- 
--	strcpy(ip_origin, (u_char *)inet_ntoa(ip->ip_src));
--	strcpy(ip_destination, (u_char *)inet_ntoa(ip->ip_dst));
-+	strcpy(ip_origin, (char *)inet_ntoa(ip->ip_src));
-+	strcpy(ip_destination, (char *)inet_ntoa(ip->ip_dst));
- 
-+#ifdef __linux__
-+	if (hmask && check_ch((u_char *)(sp + offset), ntohs(udp->len)))
-+		return;
-+
-+	printdata((u_char *)(sp + offset), ntohs(udp->len));
-+#else
- 	if (hmask && check_ch((u_char *)(sp + offset), ntohs(udp->uh_ulen)))
- 		return;
- 
- 	printdata((u_char *)(sp + offset), ntohs(udp->uh_ulen));
-+#endif
-+
- }
- 
- // check for matching CHADDR (Peter Apian-Bennewitz <apian@ise.fhg.de>)
-@@ -301,7 +311,7 @@ void printReqParmList(u_char *data, int
- // print the header and the options.
- int printdata(u_char *data, int data_len) {
- 	int	j, i;
--	u_char	buf[LARGESTRING];
-+	char	buf[LARGESTRING];
- 
- 	if (data_len == 0)
- 		return 0;
-@@ -364,7 +374,7 @@ int printdata(u_char *data, int data_len
- 	case 60:	// Domain name
- 	case 86:	// NDS Tree name
- 	case 87:	// NDS context
--		strncpy(buf, &data[j + 2], data[j + 1]);
-+		strncpy(buf, (char *)&data[j + 2], data[j + 1]);
- 		buf[data[j + 1]] = 0;
- 		printf("%s", buf);
- 		break;
-@@ -510,7 +520,7 @@ int printdata(u_char *data, int data_len
- 		printf("-");
- 		print8bits(data + j + 4);
- 		printf(" ");
--		strncpy(buf, &data[j + 5], data[j + 1] - 3);
-+		strncpy(buf, (char *)&data[j + 5], data[j + 1] - 3);
- 		buf[data[j + 1] - 3]=0;
- 		printf("%s", buf);
- 		break;
-@@ -518,6 +528,9 @@ int printdata(u_char *data, int data_len
- 	case 82:	// Relay Agent Information
- 		printf("\n");
- 		for (i = j + 2; i < j + data[j + 1]; ) {
-+			if (i != j+2) {
-+				printf("\n");
-+			}
- 			printf("%-17s %-13s ", " ",
- 			    data[i] > sizeof(relayagent_suboptions) ?
- 			    "*wrong value*" :
-@@ -527,7 +540,7 @@ int printdata(u_char *data, int data_len
- 				break;
- 			}
- 			printHexColon(data + i + 2, data[i + 1]);
--			i += data[i + 1];
-+			i += data[i + 1] + 2;
- 		}
- 		break;
- 
 --- dhcpdump-1.8.orig/dhcpdump.pod
 +++ dhcpdump-1.8/dhcpdump.pod
 @@ -12,15 +12,15 @@ B<dhcpdump> [B<-h> I<regular-expression>
@@ -206,7 +105,7 @@ Last-Update: 2020-11-05
  
 -This command parses the output of tcpdump to display the dhcp-packets for
 -easier checking and debugging.
-+This command captures the dhcp-packets and display packets after analysis.
++This command captures the dhcp-packets and display packets after analysis. 
 +for easier checking and debugging.
  
  =head1 USAGE

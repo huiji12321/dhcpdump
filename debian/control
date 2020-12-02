@@ -2,10 +2,12 @@ Source: dhcpdump
 Section: admin
 Priority: optional
 Maintainer: Peter Ji <peter_jay@yeah.net>
-Build-Depends: debhelper (>=11~), libpcap0.8-dev
-Standards-Version: 4.3.0
+Build-Depends: debhelper-compat (= 13), libpcap0.8-dev
+Standards-Version: 4.5.0
 Homepage: https://github.com/huiji12321/dhcpdump
 Vcs-Git: https://github.com/huiji12321/dhcpdump
+Vcs-Browser: https://github.com/huiji12321/dhcpdump
+Rules-Requires-Root: binary-targets
 
 Package: dhcpdump
 Architecture: any

@@ -2,10 +2,11 @@
 export DH_VERBOSE = 1
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
-export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+export DEB_LDFLAGS_MAINT_APPEND = -Wl
 
 SHELL=/bin/bash
 BIN_PATH = /usr/bin
+CFLAGS = -g -O2 -Wall
 
 # The name and version of the source
 source = $(shell grep "^Source: " debian/control|head -1|sed 's/Source: \(.*\)/\1/g')
@@ -23,21 +24,23 @@ ifeq ($(origin CC),default)
 CC = $(DEB_HOST_GNU_TYPE)-gcc
 endif
 
-ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-CFLAGS = -g -O2 -Wall
-else
-CFLAGS = -O2 -Wall
-endif
-STRIP = $(DEB_HOST_GNU_TYPE)-strip
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-STRIP = strip
-endif
+#ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+#CFLAGS = -g -O2 -Wall
+#else
+#CFLAGS = -O2 -Wall
+#endif
+
+#STRIP = $(DEB_HOST_GNU_TYPE)-strip
+#ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+#STRIP = strip
+#endif
+
 
 %:
-	dh $@  
+	dh $@
 
 build:
-	$(MAKE) CC=$(CC) CFLAGS="$(CFLAGS) $(EXTRAFLAG) -DHAVE_STRSEP"
+	$(MAKE) CC=$(CC) CFLAGS="$(CFLAGS) $(EXTRAFLAG) -DHAVE_STRSEP -D_FORTIFY_SOURCE=2"
 
 clean:debclean
 	$(MAKE) clean
@@ -46,12 +49,12 @@ clean:debclean
 debclean:
 	rm -rf debian/dhcpdump
 	rm -rf debian/dhcpdump.substvars
-	rm -f debian/{files,substvars}
+	rm -rf debian/{files,substvars}
+	rm -rf debian/.debhelper
 
 override_dh_auto_install:
 	#
 	$(installbin) -d debian/$(package)/usr/bin
-	$(STRIP) dhcpdump
 	$(installbin) dhcpdump debian/$(package)/usr/bin
 	#
 	$(installbin) -d debian/$(package)/usr/share/man/man8

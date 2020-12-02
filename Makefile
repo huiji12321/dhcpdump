@@ -1,5 +1,5 @@
 CFLAGS=	 -Wall -g
-LDFLAGS= -g  -fpie -pie -Wl,-z,relro
+LDFLAGS= -g -pie -fpie -Wl,-z,relro -Wl,-z,now
 LIBS=	-lpcap
 installbin = install -g root -o root -m 755
 installdoc = install -g root -o root -m 644
@@ -32,7 +32,7 @@ dhcpdump.o: dhcpdump.c dhcp_options.h Makefile
 	cat debian/copyright LICENSE > copyright.txt
 
 install: all
-	strip dhcpdump
+	#strip dhcpdump
 	$(installbin) dhcpdump $(BIN_PATH)
 	$(installdoc) dhcpdump.8 $(MAN_PATH)
 	gzip -9n $(MAN_PATH)dhcpdump.8
