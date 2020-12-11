@@ -1,6 +1,0 @@
-dhcpdump for Debian
-
- captures the dhcp-packets and display packets after analysis for easier checking and debugging.
- This package provides a tool for visualization of DHCP packets as recorded and output by tcpdump to analyze DHCP server responses.
-
- -- Peter Ji <peter_jay@yeah.net>  Mon, 30 Nov 2020 10:50:06 +0800

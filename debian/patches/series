@@ -1,1 +1,3 @@
-000-fix-manpage.patch
+000_update_befor_adoption.patch
+001_add_install_target.patch
+002_update_manpage.patch

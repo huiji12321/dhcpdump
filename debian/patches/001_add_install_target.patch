@@ -1,0 +1,26 @@
+Description: <add install target>
+Author: Peter Ji <peter_jay@yeah.net>
+Forwarded: not-needed
+Last-Update: 2020-12-07
+
+--- dhcpdump-1.8.orig/Makefile
++++ dhcpdump-1.8/Makefile
+@@ -2,6 +2,9 @@ CFLAGS=	 -Wall -g
+ LDFLAGS= -g
+ LIBS=	-lpcap
+ 
++BIN_PATH = /usr/sbin
++MAN_PATH = /usr/share/man/man8/
++
+ all: dhcpdump dhcpdump.8
+ 
+ clean:
+@@ -19,3 +22,8 @@ dhcpdump: dhcpdump.o
+ 
+ dhcpdump.o: dhcpdump.c dhcp_options.h Makefile
+ 	${CC} ${CFLAGS} -c -o $@ dhcpdump.c
++
++install: all
++	cp dhcpdump $(BIN_PATH)
++	cp dhcpdump.8 $(MAN_PATH)
++	gzip -9n $(MAN_PATH)dhcpdump.8

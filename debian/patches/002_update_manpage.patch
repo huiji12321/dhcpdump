@@ -1,0 +1,58 @@
+Description: <update the description in manpage and fix spelling mistakes>
+Author: Peter Ji <peter_jay@yeah.net>
+Bug-Debian: https://bugs.debian.org/647228
+Bug-Debian: https://bugs.debian.org/934419
+Last-Update: 2020-12-07
+
+--- dhcpdump-1.8.orig/dhcp_options.h
++++ dhcpdump-1.8/dhcp_options.h
+@@ -118,7 +118,7 @@ const char *dhcp_options[] = {
+ /* 107 */	"???",
+ /* 108 */	"Swap Path",
+ /* 109 */	"???",
+-/* 110 */	"IPX Compatability",
++/* 110 */	"IPX Compatibility",
+ /* 111 */	"???",
+ /* 112 */	"Netinfo Address",
+ /* 113 */	"Netinfo Tag",
+--- dhcpdump-1.8.orig/dhcpdump.c
++++ dhcpdump-1.8/dhcpdump.c
+@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
+ 			interface = argv[++i];
+ 			break;
+ 		default:
+-			fprintf(stderr, "%s: %c: uknown option\n",
++			fprintf(stderr, "%s: %c: unknown option\n",
+ 			    argv[0], argv[i][1]);
+ 			usage();
+ 		}
+--- dhcpdump-1.8.orig/dhcpdump.pod
++++ dhcpdump-1.8/dhcpdump.pod
+@@ -12,15 +12,15 @@ B<dhcpdump> [B<-h> I<regular-expression>
+ 
+ =head1 DESCRIPTION
+ 
+-This command parses the output of tcpdump to display the dhcp-packets for
+-easier checking and debugging.
++This command captures the dhcp-packets and display packets after analysis 
++for easier checking and debugging.
+ 
+ =head1 USAGE
+ 
+ S<dhcpdump -i /dev/fxp0>
+ 
+ If you want to filter a specific Client Hardware Address (CHADDR), then
+-you can specifiy it as a regular expressions:
++you can specify it as a regular expressions:
+ 
+ S<dhcpdump -i /dev/fxp0 -h ^00:c0:4f>
+ 
+@@ -71,7 +71,7 @@ Privileged access is often needed for ac
+ Not all the parameter options are printed verbose, because of lack of
+ documentation. Not all the options are tested, because of lack of
+ clients/servers with these options. If you have a dump of one of
+-them, please send them to me and I'll incorperate them.
++them, please send them to me and I'll incorporate them.
+ 
+ =head1 THANKS TO
+ 

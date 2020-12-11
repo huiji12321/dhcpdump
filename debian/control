@@ -3,11 +3,11 @@ Section: admin
 Priority: optional
 Maintainer: Peter Ji <peter_jay@yeah.net>
 Build-Depends: debhelper-compat (= 13), libpcap0.8-dev
-Standards-Version: 4.5.0
-Homepage: https://github.com/huiji12321/dhcpdump
-Vcs-Git: https://github.com/huiji12321/dhcpdump
+Standards-Version: 4.5.1
+Homepage: http://www.mavetju.org/unix/general.php
+Vcs-Git: https://github.com/huiji12321/dhcpdump.git
 Vcs-Browser: https://github.com/huiji12321/dhcpdump
-Rules-Requires-Root: binary-targets
+Rules-Requires-Root: no
 
 Package: dhcpdump
 Architecture: any
@@ -15,5 +15,5 @@ Multi-Arch: foreign
 Depends: tcpdump, ${misc:Depends}, ${shlibs:Depends}
 Description: Capture dhcp-packets and show for easier checking and debugging
  This package provides a tool for visualization of DHCP packets as
- recorded and output by tcpdump to analyze DHCP server responses.
+ recorded and output by tcpdump to analyze DHCP server responses
  for easier checking and debugging.

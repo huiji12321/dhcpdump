@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 			interface = argv[++i];
 			break;
 		default:
-			fprintf(stderr, "%s: %c: unknown option\n",
+			fprintf(stderr, "%s: %c: uknown option\n",
 			    argv[0], argv[i][1]);
 			usage();
 		}

@@ -1,3 +1,4 @@
 version=4
-opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%dhcpdump-$1.tar.gz%" \
-	     https://github.com/huiji12321/dhcpdump/releases (?:.*?/)?v?(\d[\d.]*)\.tar\.gz
+opts="pgpmode=none" \
+https://www.mavetju.org/download/ \
+(?:.*)/dhcpdump-@ANY_VERSION@@ARCHIVE_EXT@

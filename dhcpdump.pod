@@ -12,7 +12,7 @@ B<dhcpdump> [B<-h> I<regular-expression>] B<-i> I<interface>
 
 =head1 DESCRIPTION
 
-This command captures the dhcp-packets and display packets after analysis. 
+This command captures the dhcp-packets and display packets after analysis 
 for easier checking and debugging.
 
 =head1 USAGE

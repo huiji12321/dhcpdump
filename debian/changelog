@@ -1,10 +1,33 @@
 dhcpdump (1.8-3) unstable; urgency=low
 
-  * New-maintainer upload. (Closes: #934419)
-  * Fix the manpage,dhcpdump does not parse the output of tcpdump
-    but analyze and display it. (Closes: #647228)
+  * Add the patch "update_befor_adoption".
+  * Add the "install" target in the Makefile.
+  * Update the description of dhcpdump in manpage
+    - and fixed some spelling mistakes.(Closes: #647228)
+  * Switch to 3.0 (quilt) source package format:
+    - Added source/format
+    - Added upstream/metadata
+    - Added watch file (no signature)
+    - Patches created for former maintainer's update
+    - Patches created for adding target "install" in makefile
+    - Patches created for description of dhcpdump in manpage
+      and some spelling mistakes.
+  * d/control:
+    - Set maintainer to Peter Ji (Closes: #934419)
+    - Add debhelper-compat (= 13) as Build-Depends
+    - Bump Std-Version to 4.5.1
+    - Add Homepage
+    - Add Vcs field
+    - Add Rules-Requires-Root: no
+  * Remove d/NMU-Disclaimer as package is orphaned
+  * Convert copyright to DEP-5
+  * Rewrite d/rules using dh
+    - Skip Makefile install rule
+    - Add files to d/install
+  * Delegate install to debhelper:
+  * Add manpages to d/manpages
 
- -- Peter Ji <peter_jay@yeah.net>  Mon, 30 Nov 2020 11:47:40 +0800
+ -- Peter Ji <peter_jay@yeah.net>  Mon, 07 Dec 2020 09:38:30 +0800
 
 dhcpdump (1.8-2.2) unstable; urgency=medium
 
