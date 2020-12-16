@@ -4,4 +4,4 @@ Depends: libpcap0.8-dev
 
 Install: make install
 
-Remark:Delete this file when packaging using debuild.
+Remark: Delete this file when packaging using debuild.
